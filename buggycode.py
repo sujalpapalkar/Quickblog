@@ -1,5 +1,4 @@
 import os
-import hashlib
 import bcrypt
 import sqlite3
 from sqlite3 import Error
