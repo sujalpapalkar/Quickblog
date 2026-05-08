@@ -16,18 +16,23 @@ def create_connection(db_file):
         return conn
     except Error as e:
         print(e)
+        return None
 
 # Function to get a user from the database
 def get_user(username):
     database = 'users.db'
     conn = create_connection(database)
     if conn is not None:
-        cur = conn.cursor()
-        query = "SELECT * FROM users WHERE username = ?"
-        cur.execute(query, (username,))
-        rows = cur.fetchall()
-        conn.close()
-        return rows
+        try:
+            cur = conn.cursor()
+            query = "SELECT * FROM users WHERE username = ?"
+            cur.execute(query, (username,))
+            rows = cur.fetchall()
+            conn.close()
+            return rows
+        except sqlite3.Error as e:
+            print(f"An error occurred: {e}")
+            return None
     else:
         return None
 
@@ -57,6 +62,9 @@ def read_file(filename):
     except FileNotFoundError:
         print(f"File {filename} not found")
         return None
+    except PermissionError:
+        print(f"Permission denied for file {filename}")
+        return None
     except Exception as e:
-        print(f"An error occurred: {e}")
+        print(f"An unexpected error occurred: {e}")
         return None
